@@ -1,4 +1,5 @@
 # Dragon Ball Z3: A Wish-granting Theorem Prover for Everyone
+<img width="200" alt="dbz3" src="asset/dbz3.png">
 
 ## Input
 Dragon Ball Z3 (DBZ3) takes an input as a list of pairs `(sid, wish, happiness)` where
