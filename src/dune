@@ -1,0 +1,4 @@
+(executable
+ (name main)
+ (modules main solver)
+ (libraries str unix z3))
