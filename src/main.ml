@@ -6,6 +6,8 @@ let main argv =
   in
   match argv with
   | [| _; num_students; num_papers; pref_csv_file |] ->
+      let num_students = int_of_string num_students in
+      let num_papers = int_of_string num_papers in
       Solver.solve num_students num_papers pref_csv_file;
       Solver.report Solver.z3opt
   | _ ->

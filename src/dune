@@ -1,4 +1,4 @@
 (executable
  (name main)
- (modules main solver)
+ (modules main solver Constraint)
  (libraries str unix z3))

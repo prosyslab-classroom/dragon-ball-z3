@@ -1,17 +1,15 @@
 let z3ctx = Z3.mk_context []
 let z3opt = z3ctx |> Z3.Optimize.mk_opt
 
-let solve _ _ _ =
+let solve num_students num_papers pref_csv_file =
   (* Make variables *)
-  let x = Z3.Arithmetic.Integer.mk_const_s z3ctx "x" in
-  let y = Z3.Arithmetic.Integer.mk_const_s z3ctx "y" in
-  let zero = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 0 in
-  let one = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 1 in
-  let sum = Z3.Arithmetic.mk_add z3ctx [ x; y ] in
+  let vars = Constraint.Variables.make z3ctx num_students num_papers in
   (* Add constraints *)
-  Z3.Optimize.add z3opt
-    [ Z3.Arithmetic.mk_lt z3ctx x zero; Z3.Arithmetic.mk_lt z3ctx y one ];
-  Z3.Optimize.maximize z3opt sum |> ignore
+  let constraints = Constraint.make z3ctx vars in
+  Z3.Optimize.add z3opt constraints;
+  (* Run solver *)
+  let objective = Constraint.make_objective z3ctx pref_csv_file vars in
+  Z3.Optimize.maximize z3opt objective |> ignore
 
 let report optimizer =
   optimizer |> Z3.Optimize.to_string
