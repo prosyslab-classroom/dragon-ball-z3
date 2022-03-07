@@ -28,14 +28,14 @@ module PreferenceTuple = struct
     |> Z3.Arithmetic.mk_add z3ctx
 end
 
-  let make_objective z3ctx pref_csv_file vars =
-    let pref_tuples = PreferenceTuple.of_file pref_csv_file in
-    List.map
-      (fun ptup ->
-        let paper_vars = List.nth vars ptup.PreferenceTuple.sid in
-        PreferenceTuple.to_objective z3ctx paper_vars ptup)
-      pref_tuples
-    |> Z3.Arithmetic.mk_add z3ctx
+let make_objective z3ctx pref_csv_file vars =
+  let pref_tuples = PreferenceTuple.of_file pref_csv_file in
+  List.map
+    (fun ptup ->
+      let paper_vars = List.nth vars ptup.PreferenceTuple.sid in
+      PreferenceTuple.to_objective z3ctx paper_vars ptup)
+    pref_tuples
+  |> Z3.Arithmetic.mk_add z3ctx
 
 module Variables = struct
   type t = Z3.Expr.expr list list
@@ -101,7 +101,18 @@ let make_unique_paper_selection z3ctx vars =
       :: constraints)
     [] sums
 
+let make_single_choice z3ctx vars =
+  let one = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 1 in
+  List.fold_left
+    (fun acc row ->
+      let sum = Z3.Arithmetic.mk_add z3ctx row in
+      Z3.Arithmetic.mk_ge z3ctx sum one
+      :: Z3.Arithmetic.mk_le z3ctx sum one
+      :: acc)
+    [] vars
+
 let make z3ctx vars =
-  let c_make_vars_zero_or_one = make_vars_zero_or_one z3ctx vars in
+  let c_vars_zero_or_one = make_vars_zero_or_one z3ctx vars in
   let c_unique_paper_selection = make_unique_paper_selection z3ctx vars in
-  c_make_vars_zero_or_one @ c_unique_paper_selection
+  let c_single_choice = make_single_choice z3ctx vars in
+  c_vars_zero_or_one @ c_unique_paper_selection @ c_single_choice
