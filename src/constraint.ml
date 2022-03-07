@@ -52,7 +52,8 @@ module Variables = struct
           loop 0 num_papers
             (fun pid row ->
               let pid = string_of_int pid in
-              Z3.Arithmetic.Integer.mk_const_s z3ctx ("x" ^ sid ^ pid) :: row)
+              let vname = "x" ^ sid ^ pid in
+              Z3.Arithmetic.Integer.mk_const_s z3ctx vname :: row)
             []
           |> List.rev
         in
@@ -80,7 +81,8 @@ let make_vars_zero_or_one z3ctx vars =
         constraints row)
     [] vars
 
-let make_unique_paper_selection z3ctx vars =
+let make_paper_selection_zero_or_one z3ctx vars =
+  let zero = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 0 in
   let one = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 1 in
   let sums =
     List.fold_left
@@ -96,12 +98,12 @@ let make_unique_paper_selection z3ctx vars =
   in
   List.fold_left
     (fun constraints sum ->
-      Z3.Arithmetic.mk_ge z3ctx sum one
+      Z3.Arithmetic.mk_ge z3ctx sum zero
       :: Z3.Arithmetic.mk_le z3ctx sum one
       :: constraints)
     [] sums
 
-let make_single_choice z3ctx vars =
+let make_student_to_one_paper z3ctx vars =
   let one = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 1 in
   List.fold_left
     (fun acc row ->
@@ -113,6 +115,8 @@ let make_single_choice z3ctx vars =
 
 let make z3ctx vars =
   let c_vars_zero_or_one = make_vars_zero_or_one z3ctx vars in
-  let c_unique_paper_selection = make_unique_paper_selection z3ctx vars in
-  let c_single_choice = make_single_choice z3ctx vars in
-  c_vars_zero_or_one @ c_unique_paper_selection @ c_single_choice
+  let c_paper_selection_zero_or_one =
+    make_paper_selection_zero_or_one z3ctx vars
+  in
+  let c_student_to_one_paper = make_student_to_one_paper z3ctx vars in
+  c_vars_zero_or_one @ c_paper_selection_zero_or_one @ c_student_to_one_paper
