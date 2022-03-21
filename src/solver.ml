@@ -15,7 +15,7 @@ let solve num_papers pref_csv_file =
   Z3.Optimize.add z3opt constraints;
   (* Run solver *)
   let objective = Constraint.make_objective z3ctx pref_csv_file vars in
-  Z3.Optimize.maximize z3opt objective |> ignore;
+  let _ = Z3.Optimize.maximize z3opt objective in
   vars
 
 let eval model vars =
@@ -32,7 +32,14 @@ let eval model vars =
                 F.fprintf F.std_formatter "Student %d -> Paper %d\n" sid pid
           | None -> ())
         papers)
-    vars
+    vars;
+  let objective = z3opt |> Z3.Optimize.get_objectives |> Fun.flip List.nth 0 in
+  let max =
+    Z3.Model.eval model objective false
+    |> Option.get |> Z3.Arithmetic.Integer.numeral_to_string |> int_of_string
+    |> abs
+  in
+  F.fprintf F.std_formatter "Max score: %d\n" max
 
 let report z3opt vars =
   match Z3.Optimize.check z3opt with

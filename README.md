@@ -15,11 +15,11 @@ happiness score of all students.
 
 This project can be built on the provided OCaml environment (Docker image or KCLOUD vm) to students.
 
-After running `make` under the project root directory, one can check `assemble` generated.
+After running `make` under the project root directory, one can check `dbz3` generated.
 
 ## Run
 ```
-./assemble [ NUM_PAPERS ] [ PREFERENCE_CSV ]
+./dbz3 [ NUM_PAPERS ] [ PREFERENCE_CSV ]
 ```
-For example, `./assemble 3 examples/simple.csv` command assumes three papers and each student's wish is denoted as a row of `examples/simple.csv`.
+For example, `./dbz3 3 examples/simple.csv` command assumes three papers and each student's wish is denoted as a row of `examples/simple.csv`.
 The number of students is the same as the number of lines of the csv file.
