@@ -2,7 +2,7 @@ MAKE=@make
 DUNE=@dune
 LN=@ln -sf
 RM=@rm
-EXE=assemble
+EXE=dbz3
 
 all:
 	$(DUNE) build src/main.exe
