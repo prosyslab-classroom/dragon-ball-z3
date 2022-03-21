@@ -17,12 +17,12 @@ module PreferenceTuple = struct
           parse ic (sid + 1) new_acc
       | exception End_of_file -> acc |> List.rev
     in
-    parse file_ic 0 []
+    parse file_ic 1 []
 
   let to_objective z3ctx paper_vars t =
     t.preferences
     |> List.map (fun (wish, happiness) ->
-           let x = List.nth paper_vars wish in
+           let x = List.nth paper_vars (wish - 1) in
            let w = Z3.Arithmetic.Integer.mk_numeral_i z3ctx happiness in
            Z3.Arithmetic.mk_mul z3ctx [ w; x ])
     |> Z3.Arithmetic.mk_add z3ctx
@@ -32,7 +32,7 @@ let make_objective z3ctx pref_csv_file vars =
   let pref_tuples = PreferenceTuple.of_file pref_csv_file in
   List.map
     (fun ptup ->
-      let paper_vars = List.nth vars ptup.PreferenceTuple.sid in
+      let paper_vars = List.nth vars (ptup.PreferenceTuple.sid - 1) in
       PreferenceTuple.to_objective z3ctx paper_vars ptup)
     pref_tuples
   |> Z3.Arithmetic.mk_add z3ctx
@@ -42,14 +42,13 @@ module Variables = struct
 
   let make z3ctx num_students num_papers =
     let rec loop i n f acc =
-      if i > n then assert false;
-      if i = n then acc else loop (i + 1) n f (f i acc)
+      if i > n then acc else loop (i + 1) n f (f i acc)
     in
-    loop 0 num_students
+    loop 1 num_students
       (fun sid matrix ->
         let sid = string_of_int sid in
         let row =
-          loop 0 num_papers
+          loop 1 num_papers
             (fun pid row ->
               let pid = string_of_int pid in
               let vname = "x" ^ sid ^ pid in
@@ -60,12 +59,6 @@ module Variables = struct
         row :: matrix)
       []
     |> List.rev
-
-  let get sid pid vars =
-    try
-      let row = List.nth vars sid in
-      List.nth row pid
-    with _ -> failwith "Variables: index not available"
 end
 
 let make_vars_zero_or_one z3ctx vars =
