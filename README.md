@@ -21,6 +21,6 @@ After running `make` under the project root directory, one can check `dbz3` gene
 ```
 ./dbz3 [ NUM_PAPERS ] [ PREFERENCE_CSV ]
 ```
-For example, `./dbz3 3 examples/simple.csv` command assumes three papers and each student's wish
-is denoted as a row of [examples/simple.csv](examples/simple.csv).
+For example, `./dbz3 3 test/example1.csv` command assumes three papers and each student's wish
+is denoted as a row of [test/example1.csv](test/example1.csv).
 The number of students is the same as the number of lines of the csv file.
