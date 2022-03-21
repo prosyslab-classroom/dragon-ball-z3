@@ -1,7 +1,10 @@
 let z3ctx = Z3.mk_context []
 let z3opt = z3ctx |> Z3.Optimize.mk_opt
 
-let solve num_students num_papers pref_csv_file =
+let get_num_students csv_file = csv_file |> Constraint.PreferenceTuple.of_file |> List.length
+
+let solve num_papers pref_csv_file =
+  let num_students = get_num_students pref_csv_file in
   (* Make variables *)
   let vars = Constraint.Variables.make z3ctx num_students num_papers in
   (* Add constraints *)

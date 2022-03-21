@@ -18,6 +18,7 @@ After running `make` under the project root directory, one can check `assemble` 
 
 ## Run
 ```
-./assemble [ NUM_STUDENTS ] [ NUM_PAPERS ] [ PREFERENCE_CSV ]
+./assemble [ NUM_PAPERS ] [ PREFERENCE_CSV ]
 ```
-For example, `./assemble 3 3 examples/simple.csv` command assumes three students, three papers and each student's wish is denoted as a row of `example/simple.csv`.
+For example, `./assemble 3 examples/simple.csv` command assumes three papers and each student's wish is denoted as a row of `examples/simple.csv`.
+The number of students is the same as the number of lines of the csv file.
