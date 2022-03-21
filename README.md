@@ -2,8 +2,10 @@
 <img width="200" alt="dbz3" src="asset/dbz3.png">
 
 ## Input
-Dragon Ball Z3 (DBZ3) takes an input as a list of tuples `(sid, wish-1, wish-2, wish-3)` where
-`sid` and `wish-N` denote student id (conceptually, line number) and `N`th-preferred wish.
+Dragon Ball Z3 (DBZ3) takes a `csv` file as an input.
+Each line contains a tuple `(wish-1, wish-2, wish-3)` where
+`wish-N` is the id of the `N`th-preferred wish.
+The line number corresponds to the student id.
 
 ## Output
 The output of DBZ3 is an assignment from `sid`s to `wish`s that maximizes the total
