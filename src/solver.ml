@@ -1,7 +1,7 @@
 module F = Format
 
 let z3ctx = Z3.mk_context []
-let z3opt = z3ctx |> Z3.Optimize.mk_opt
+let z3opt = Z3.Optimize.mk_opt z3ctx
 
 let get_num_students csv_file =
   csv_file |> Constraint.PreferenceTuple.of_file |> List.length
@@ -22,14 +22,13 @@ let eval model vars =
   let one = Z3.Arithmetic.Integer.mk_numeral_i z3ctx 1 in
   List.iteri
     (fun sid papers ->
-      let sid = sid + 1 in
       List.iteri
         (fun pid v ->
-          let pid = pid + 1 in
           match Z3.Model.eval model v false with
           | Some e ->
               if Z3.Expr.equal e one then
-                F.fprintf F.std_formatter "Student %d -> Paper %d\n" sid pid
+                F.fprintf F.std_formatter "Student %d -> Paper %d\n" (sid + 1)
+                  (pid + 1)
           | None -> ())
         papers)
     vars;
