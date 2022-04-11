@@ -51,7 +51,7 @@ module Variables = struct
           loop 1 num_papers
             (fun pid row ->
               let pid = string_of_int pid in
-              let vname = "x" ^ sid ^ pid in
+              let vname = "x" ^ sid ^ "_" ^ pid in
               Z3.Arithmetic.Integer.mk_const_s z3ctx vname :: row)
             []
           |> List.rev
